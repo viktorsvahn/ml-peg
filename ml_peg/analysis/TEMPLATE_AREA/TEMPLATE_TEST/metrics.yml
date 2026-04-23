@@ -2,6 +2,6 @@ metrics:
   MAE:
     good: 0.0
     bad: 100.0
-    unit: kJ/mol
+    unit: "unit"
     tooltip: "Mean Absolute Error for all systems"
-    level_of_theory: wB97V-M
+    level_of_theory: "FF/FUNCTIONAL/etc"
