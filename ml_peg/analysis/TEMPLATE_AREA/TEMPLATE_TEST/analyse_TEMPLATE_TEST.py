@@ -59,7 +59,9 @@ def get_system_names() -> list[str]:
                 ###############################################################
                 ### EVALUATE: SOME CUSTOM ANALYSIS
                 for mol in mols:
-                    pass
+                    if mol.info['charge'] == 0:
+                        system_names.append(mol.info['mol'])
+                    
                 ###############################################################
                 break
     return system_names
@@ -75,16 +77,15 @@ def get_system_names() -> list[str]:
         "System": get_system_names(),
     },
 )
-def OUTPUT_PROPERTY() -> dict[str, list]:
+def electron_affinity() -> dict[str, list]:
     """
-    ADD A DESCRIPTION OF THE OUTPUT HERE. 
-
-    IT SHOULD BE CLEAR HOW THE OUTPUT IS BEING COMPUTED.
+    Electron affinity computed from energies of optimized
+    charge neutral and minus one charged molecules.
 
     Returns
     -------
     dict[str, list]
-        Dictionary of reference and predicted OUTPUT PROPERTY.
+        Dictionary of reference and predicted electron affinities.
     """
     results = {"ref": []} | {mlip: [] for mlip in MODELS}
     ref_stored = False
@@ -100,25 +101,38 @@ def OUTPUT_PROPERTY() -> dict[str, list]:
         ### ONLY PERFORM ANALYSIS IF OUTPUT EXISTS. KEEP THIS.
         if not xyz_file:
             continue
-
+            
+        # Place to copy individual structure files to app data directory
+        structs_dir = OUT_PATH / model_name
+        structs_dir.mkdir(parents=True, exist_ok=True)
         ### READ DATA
         mols = read(xyz_file, index=":")
 
         #######################################################################
         ### DO ANALYSIS
+        model_energies_charge_neutral={}
+        model_energies_charged={}
+        ref_energies_charge_neutral={}
+        ref_energies_charged={}
         for mol in mols:
-            pass
-            ###################################################################
+            if mol.info['charge'] == 0:
+                model_energies_charge_neutral.update({mol.info['mol']:mol.get_potential_energy()})
+                ref_energies_charge_neutral.update({mol.info['mol']:mol.info['REF_energy']})
+                write(structs_dir+f'{mol.info['mol']}.xyz',mol)
+            if mol.info['charge'] == -1:
+                model_energies_charged.update({mol.info['mol']:mol.get_potential_energy()})
+                ref_energies_charged.update({mol.info['mol']:mol.info['REF_energy']})            
+            
+        ###################################################################
 
-            # STORE REFERENCE VALUES (IF NEEDED)
-            if not ref_stored:
-                results["ref"].append(??)            
-           
-            # Copy individual structure files to app data directory
-            structs_dir = OUT_PATH / model_name
-            structs_dir.mkdir(parents=True, exist_ok=True)
-
-        ref_stored = True
+        # STORE REFERENCE VALUES (IF NEEDED)
+        if not ref_stored:
+            for k in ref_energies_charge_neutral.keys():
+                results["ref"].append( ref_energies_charged[k] - ref_energies_charge_neutral[k] )      
+            ref_stored=True
+        for k in model_energies_charge_neutral.keys():
+            results[model_name].append( model_energies_charged[k] - model_energies_charge_neutral[k] )      
+            
     return results
 
 
