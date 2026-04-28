@@ -63,10 +63,10 @@ def get_system_names() -> list[str]:
 
 @pytest.fixture
 @plot_parity(
-    filename=OUT_PATH / "figure_TEMPLATE_TEST_OUTPUT.json",
-    title="TEMPLATE_TEST OUTPUT DESCRIPTION",
-    x_label="Reference SUITABLE LABEL /UNIT",
-    y_label="SUITABLE LABEL /UNIT",
+    filename=OUT_PATH / "figure_ea_int_chal_halo_OUTPUT.json",
+    title="Electron affinities",
+    x_label="Reference EA /eV",
+    y_label="EA /UNIT",
     hoverdata={
         "System": get_system_names(),
     },
@@ -129,52 +129,48 @@ def electron_affinity() -> dict[str, list]:
 
 
 @pytest.fixture
-def TEMPLATE_TEST_errors(OUTPUT_PROPERTY) -> dict[str, float]:
+def ea_int_chal_halo_errors(electron_affinity) -> dict[str, float]:
     """
-    ADD A DESCRIPTION OF THE ERROR OUTPUT HERE. 
-
-    IT SHOULD BE CLEAR HOW/WHAT ERRORS ARE COMPUTED.
-
+    Mean absolute error in electron affinities.
+     
     Parameters
     ----------
-    OUTPUT_PROPERTY ### COULD BE, e.g., TOTAL ENERGIES
-        Dictionary of reference and predicted OUTPUT PROPERTY.
+    electron_affinity 
+        Dictionary of reference and predicted electron affinities.
 
     Returns
     -------
     dict[str, float]
-        Dictionary of predicted OUTPUT PROPERTY errors for all models.
+        Dictionary of predicted electron affinity errors for all models.
     """
+    
     results = {}
     for model_name in MODELS:
-
-        #######################################################################
-        ### GET ERRORS: THIS IS JUST AN EXAMPLE. USE PREDEFINED: mae, rmse, etc
-        if OUTPUT_PROPERTY[model_name]:
+        if electron_affinity[model_name]:
             results[model_name] = mae(
-                OUTPUT_PROPERTY["ref"], OUTPUT_PROPERTY[model_name]
+                electron_affinity["ref"], electron_affinity[model_name]
             )
         else:
             results[model_name] = None
-        #######################################################################
+
     return results
 
 
 @pytest.fixture
 @build_table(
-    filename=OUT_PATH / "TEMPLATE_TEST_metrics_table.json",
+    filename=OUT_PATH / "ea_int_chal_halo_metrics_table.json",
     metric_tooltips=DEFAULT_TOOLTIPS,
     thresholds=DEFAULT_THRESHOLDS,
     mlip_name_map=DISPERSION_NAME_MAP,
 )
-def metrics(TEMPLATE_TEST_errors: dict[str, float]) -> dict[str, dict]:
+def metrics(ea_int_chal_halo_errors: dict[str, float]) -> dict[str, dict]:
     """
-    Get all TEMPLATE_TEST metrics.
+    Get all electron affinity metrics.
 
     Parameters
     ----------
-    TEMPLATE_TEST_errors
-        Mean absolute errors for all systems. ### JUST AN EXAMPLE
+    ea_int_chal_halo_errors
+        Mean absolute errors for all systems. 
 
     Returns
     -------
@@ -182,17 +178,17 @@ def metrics(TEMPLATE_TEST_errors: dict[str, float]) -> dict[str, dict]:
         Metric names and values for all models.
     """
     return {
-        "MAE": TEMPLATE_TEST_errors,
+        "MAE": ea_int_chal_halo_errors,
     }
 
 
-def test_TEMPLATE_TEST(metrics: dict[str, dict]) -> None:
+def test_ea_int_chal_halo(metrics: dict[str, dict]) -> None:
     """
-    Run TEMPLATE_TEST test.
+    Run ea_int_chal_halo test.
 
     Parameters
     ----------
     metrics
-        All TEMPLATE_TEST metrics.
+        All ea_int_chal_halo metrics.
     """
     return
