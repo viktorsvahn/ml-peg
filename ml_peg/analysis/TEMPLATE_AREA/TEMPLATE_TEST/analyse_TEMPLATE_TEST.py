@@ -46,7 +46,7 @@ def get_system_names() -> list[str]:
     for model_name in MODELS:
         model_dir = CALC_PATH / model_name
         if model_dir.exists():
-            xyz_file = model_dir / "NAME_OF_DATABASE_FROM_ZIPFILE.xyz"
+            xyz_file = model_dir / "EA_INT_CHAL_HALO.xyz"
 
             ### ONLY PERFORM ANALYSIS IF OUTPUT EXISTS. KEEP THIS.
             if xyz_file:
@@ -90,7 +90,7 @@ def electron_affinity() -> dict[str, list]:
         if not model_dir.exists():
             continue
 
-        xyz_file = model_dir / "NAME_OF_DATABASE_FROM_ZIPFILE.xyz"
+        xyz_file = model_dir / "EA_INT_CHAL_HALO.xyz"
         
         ### ONLY PERFORM ANALYSIS IF OUTPUT EXISTS. KEEP THIS.
         if not xyz_file:
