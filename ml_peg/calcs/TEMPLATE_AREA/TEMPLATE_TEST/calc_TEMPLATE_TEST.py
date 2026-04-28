@@ -72,4 +72,4 @@ def test_ae_int_chal_halo(mlip: tuple[str, Any]) -> None:
 	if len(mol_out) > 0:
 		write_dir = OUT_PATH/model_name # USE THIS, DO NOT ALTER
 		write_dir.mkdir(parents=True, exist_ok=True) # AND THIS, DO NOT ALTER
-		write(write_dir/"AE_INT_CHAL_HALO.xyz", mol_out) # AND THIS, WITH THE CORRECT FILENAME
+		write(write_dir/"EA_INT_CHAL_HALO.xyz", mol_out) # AND THIS, WITH THE CORRECT FILENAME
