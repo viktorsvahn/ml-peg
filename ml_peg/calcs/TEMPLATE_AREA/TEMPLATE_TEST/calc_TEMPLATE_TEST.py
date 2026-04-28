@@ -6,6 +6,7 @@ from typing import Any
 
 from ase import units
 from ase.io import read, write
+from ase.optimize import BFGS
 import numpy as np
 import pytest
 import json
@@ -22,7 +23,7 @@ OUT_PATH = Path(__file__).parent / "outputs"
 
 
 @pytest.mark.parametrize("mlip", MODELS.items())
-def test_scaling_pol(mlip: tuple[str, Any]) -> None:
+def test_ae_int_chal_halo(mlip: tuple[str, Any]) -> None:
 	"""
 	ADD A DESCRIPTION OF THE TEST HERE. 
 
@@ -62,7 +63,8 @@ def test_scaling_pol(mlip: tuple[str, Any]) -> None:
 	for mol in mols:
 		calc = copy(clean_calc)
 		mol.calc = calc
-		_ = mol.get_potential_energy()
+		opt = BFGS(mol,maxstep=0.05)
+		opt.run(fmax=0.01,steps=100)
 		mol_out.append(mol)
 	###########################################################################
 
