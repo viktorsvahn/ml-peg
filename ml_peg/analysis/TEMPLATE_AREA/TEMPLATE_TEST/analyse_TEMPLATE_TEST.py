@@ -33,9 +33,7 @@ DEFAULT_THRESHOLDS, DEFAULT_TOOLTIPS, DEFAULT_WEIGHTS = load_metrics_config(
 
 def get_system_names() -> list[str]:
     """
-    ADD A DESCRIPTION OF THE TEST HERE. 
-
-    IT SHOULD BE CLEAR HOW THE ANALYSIS IS BEING MADE.
+    Get list of molecule names.
 
     Returns
     -------
@@ -56,13 +54,9 @@ def get_system_names() -> list[str]:
                 ### READ DATA
                 mols = read(xyz_file, index=':')
 
-                ###############################################################
-                ### EVALUATE: SOME CUSTOM ANALYSIS
                 for mol in mols:
                     if mol.info['charge'] == 0:
                         system_names.append(mol.info['mol'])
-                    
-                ###############################################################
                 break
     return system_names
 
@@ -123,8 +117,6 @@ def electron_affinity() -> dict[str, list]:
                 model_energies_charged.update({mol.info['mol']:mol.get_potential_energy()})
                 ref_energies_charged.update({mol.info['mol']:mol.info['REF_energy']})            
             
-        ###################################################################
-
         # STORE REFERENCE VALUES (IF NEEDED)
         if not ref_stored:
             for k in ref_energies_charge_neutral.keys():
