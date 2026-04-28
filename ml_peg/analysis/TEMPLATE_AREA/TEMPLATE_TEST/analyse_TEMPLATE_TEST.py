@@ -65,8 +65,8 @@ def get_system_names() -> list[str]:
 @plot_parity(
     filename=OUT_PATH / "figure_ea_int_chal_halo_OUTPUT.json",
     title="Electron affinities",
-    x_label="Reference EA /eV",
-    y_label="EA /UNIT",
+    x_label="Reference EA / eV",
+    y_label="EA / eV",
     hoverdata={
         "System": get_system_names(),
     },
@@ -126,6 +126,74 @@ def electron_affinity() -> dict[str, list]:
             results[model_name].append( model_energies_charged[k] - model_energies_charge_neutral[k] )      
             
     return results
+
+
+@pytest.fixture
+@plot_parity(
+    filename=OUT_PATH / "figure_dist_int_chal_halo_OUTPUT.json",
+    title="Bond lenghts",
+    x_label="Reference bond length /Å",
+    y_label="Model bond length /Å",
+    hoverdata={
+        "System": get_system_names()*2,
+        "Net charge": [0]*len( get_system_names())+[-1]*len( get_system_names())
+    },
+)
+def bond_length() -> dict[str, list]:
+    """
+    Bond lengths computed from optimized charge neutral molecules.
+
+    Returns
+    -------
+    dict[str, list]
+        Dictionary of reference and predicted bond lengths.
+    """
+    results = {"ref": []} | {mlip: [] for mlip in MODELS}
+    ref_stored = False
+
+    for model_name in MODELS:
+        model_dir = CALC_PATH / model_name
+
+        if not model_dir.exists():
+            continue
+
+        xyz_file = model_dir / "EA_INT_CHAL_HALO.xyz"
+        
+        ### ONLY PERFORM ANALYSIS IF OUTPUT EXISTS. KEEP THIS.
+        if not xyz_file:
+            continue          
+
+        ### READ DATA
+        mols = read(xyz_file, index=":")
+
+        #######################################################################
+        ### DO ANALYSIS
+        model_bond_lengths_charge_neutral={}
+        ref_bond_lenghts_charge_neutral={}
+        model_bond_lengths_charged={}
+        ref_bond_lenghts_charged={}
+        for mol in mols:
+            if mol.info['charge'] == 0:
+                model_bond_lengths_charge_neutral.update({mol.info['mol']:mol.info['bond_length']})
+                ref_bond_lengths_charge_neutral.update({mol.info['mol']:mol.info['REF_bond_length']})
+            if mol.info['charge'] == -1:
+                model_bond_lengths_charged.update({mol.info['mol']:mol.info['bond_length']})
+                ref_bond_lengths_charged.update({mol.info['mol']:mol.info['REF_bond_length']})            
+            
+        # STORE REFERENCE VALUES (IF NEEDED)
+        if not ref_stored:
+            for k in ref_bond_lengths_charge_neutral.keys():
+                results["ref"].append( ref_bond_lengths_charge_neutral[k])
+            for k in ref_bond_lengths_charge_neutral.keys():
+                results["ref"].append( ref_bond_lengths_charged[k])                
+            ref_stored=True
+        for k in model_bond_lengths_charge_neutral.keys():
+            results[model_name].append( model_bond_lengths_charge_neutral[k])
+        for k in model_bond_lengths_charge_neutral.keys():
+            results[model_name].append( model_bond_lengths_charged[k])
+            
+    return results
+
 
 
 @pytest.fixture
