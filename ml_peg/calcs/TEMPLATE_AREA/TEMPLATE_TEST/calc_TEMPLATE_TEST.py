@@ -39,9 +39,9 @@ def test_ae_int_chal_halo(mlip: tuple[str, Any]) -> None:
 	
  
 	#### DOWNLOAD DATA
-	scaling_pol_dir = download_github_data(
-		filename="NAME_OF_DATA.zip",
-		github_uri="https://github.com/LINK TO SOURCE DATA",
+	data_dir = download_github_data(
+		filename="ORCA_AE_INT_CHAL_HALO.zip",
+		github_uri="https://github.com/viktorsvahn/teoroo_ML-PEG/raw/refs/heads/main/data/source",
 	)
 
 	#### EVALUATION SCHEME
@@ -55,7 +55,7 @@ def test_ae_int_chal_halo(mlip: tuple[str, Any]) -> None:
 	"""
 
 	### READ DATA
-	mols = read(scaling_pol_dir/"NAME_OF_DATABASE_FROM_ZIPFILE.xyz",':')
+	mols = read(data_dir/"DFT_data.xyz",':')
 
 	###########################################################################
 	### EVALUATE: SOME CUSTOM CALCULATION
@@ -72,4 +72,4 @@ def test_ae_int_chal_halo(mlip: tuple[str, Any]) -> None:
 	if len(mol_out) > 0:
 		write_dir = OUT_PATH/model_name # USE THIS, DO NOT ALTER
 		write_dir.mkdir(parents=True, exist_ok=True) # AND THIS, DO NOT ALTER
-		write(write_dir/"NAME_OF_DATABASE_FROM_ZIPFILE.xyz", mol_out) # AND THIS, WITH THE CORRECT FILENAME
+		write(write_dir/"AE_INT_CHAL_HALO.xyz", mol_out) # AND THIS, WITH THE CORRECT FILENAME
