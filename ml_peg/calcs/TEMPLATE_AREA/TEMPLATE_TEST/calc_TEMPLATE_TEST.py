@@ -63,8 +63,12 @@ def test_ae_int_chal_halo(mlip: tuple[str, Any]) -> None:
 	for mol in mols:
 		calc = copy(clean_calc)
 		mol.calc = calc
+		REF_bond_length=mol.get_distance(0,1)
 		opt = BFGS(mol,maxstep=0.05)
 		opt.run(fmax=0.01,steps=100)
+		bond_length=mol.get_distance(0,1)
+		mol.info["REF_bond_length"]=REF_bond_length
+		mol.info['bond_length']=bond_length
 		mol_out.append(mol)
 	###########################################################################
 
